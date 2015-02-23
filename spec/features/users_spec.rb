@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 feature 'User management' do
+  background do
+    Selenium::WebDriver.for :phantomjs
+  end
   scenario "adds a new user", js: true do
     admin = create(:admin)
     sign_in admin
@@ -9,8 +12,11 @@ feature 'User management' do
     expect{
       click_link 'Users'
       click_link 'New User'
+
       fill_in 'Email', with: 'newuser@example.com'
-      find('#password').fill_in 'Password', with: 'secret123'
+      page.driver.browser.find_element(:id, "user_password").clear
+      page.driver.browser.find_element(:id, "user_password").send_keys('secret123')
+      # find('#password').fill_in 'Password', with: 'secret123'
       find('#password_confirmation').fill_in 'Password confirmation',
         with: 'secret123'
       click_button 'Create User'
